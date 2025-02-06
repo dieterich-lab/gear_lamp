@@ -4,9 +4,13 @@
 # we don't use the SSH key anymore
 # repository: git@github.com:dieterich-lab/gEAR.git 
 repository: https://github.com/dieterich-lab/gEAR.git
+# Branch or tag to deploy
+git_version: DHART
+load_external_data: no
 
 # application user - owns the git project, app-related files, and python environment installation
 app_user: www-data
+app_directory: /dhart
 
 # Defaults requirements gEAR v0.9.0 (master) are partly overridden
 # Use system Python 3.11.2 to install virtual environment
@@ -18,9 +22,8 @@ python_venv_base: "/usr/local/envs"
 python_venv_name: "{{ python_venv_base }}/dhart"
 
 # gear.ini
-dbuser: dhart
-dbname: dhart_db
-# default
+db_name: dhart_db
+db_user: dhart
 mysql_port: 3306 
 
 # DB dumps
@@ -29,3 +32,16 @@ annotation_release: 106
 # Functional annotation
 go_db: http://purl.obolibrary.org/obo/go.obo
 # gene aliases - ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO
+
+# these have to be as defined exactly as in create_schema.sql
+organisms:
+  - key: homo_sapiens
+    value: 1
+  - key: mus_musculus
+    value: 2
+  - key: rattus_norvegicus
+    value: 3
+  - key: sus_scrofa
+    value: 4
+  - key: danio_rerio
+    value: 5

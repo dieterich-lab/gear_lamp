@@ -5,11 +5,11 @@
 
 # change hosts to the target host server
 - name: Deploy the gEAR/DHART LAMP stack on the host server
-  hosts: dhart
+  hosts: "{{ target_host }}"
   roles:
-    - {role: "setup/install", tags: "setup-install"}
-    - {role: "setup/configure", tags: "setup-config"}
-    - {role: "web/install", tags: "web-install"}
-    - {role: "web/configure", tags: "web-config"}
-    - {role: "db/install", tags: "db-install"}
-    - {role: "db/configure", tags: "db-config"}
+    - {role: "setup_var_www", tags: "setup_var_www"}
+    - {role: "install", tags: "install"}
+    - {role: "configure_database", tags: "configure_database"}
+    - {role: "configure_dhart", tags: "configure_dhart"}
+    - {role: "load_external_data", tags: "load_external_data"}
+    - {role: "configure_web_server", tags: "configure_web_server"}

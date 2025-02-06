@@ -1,0 +1,25 @@
+# Ansible: roles/setup/configure/templates/gear.ini.j2
+
+[database]
+user = {{ db_user }}
+password = {{ db_password }}
+host = localhost
+name = dhart_db
+
+[contact_form]
+repo_owner = dieterich-lab
+public_repo = gEAR
+private_repo = dhart-issues
+# project ids as obtained from projectsV2 GraphQL API
+public_project = PVT_kwDOAHaDi84AECnm
+private_project = PVT_kwDOAHaDi84AEEoY
+domain_url = {{ domain_url }}
+# must be a valid GitHub account
+assignee = eboileau
+
+[test]
+host = http://localhost/
+user_name = test
+user_email = user@test.org
+user_institution = Institution
+password = Shnsv2Ak8HfB

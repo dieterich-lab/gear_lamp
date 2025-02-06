@@ -24,29 +24,39 @@ This playbook is partly adpated from the [examples and best practices for buildi
 
 ## Quickstart
 
-The stack is deployed using the following command:
+The stack is deployed using the following command, e.g. on the gear2 VM:
 
 ```
-ansible-playbook site.yml --tags [tag] -v 2>&1 | tee output.log
+ansible-playbook site.yml -e '{"target_host": "gear2", "load_external_data": "yes"}'
 ```
+
+Don't use the load_external_data flag on later runs because it will create duplicate
+entries in the database. Also, this operation is slow.
+
+To completely reset the database do this:
+
+* Drop the datbase in mysql:
+```sql
+drop database dhart_db;
+```
+
+* Remove the the marker file /dhart/.db_setup_done
+* Run the playbook again with "load_external_data": "yes"
 
 Each role can be deployed in turn with the `--tags` option, *e.g.*
 
-* setup-install: Install required libraries and python packages
-* setup-config: Configure setup 
-* web-install: Install Apache and PHP modules
-* web-config: Configure web server
-* db-install: Install MySQL
-* db-config: Configure MySQL, create DB user, etc.
+* setup_var_www: Links /var/www to the applications directory
+* install: Installs all the required software
+* configure_database: Sets up the database
+* configure_dhart: Configured DHART
+* load_external_data: Loads data from external sources (skipped unless run with
+  "load_external_data": "yes")
+* configure:web_server: Sets up Apache and PHP
 
+To perform a dry-run, just add the --check option.
 
-To perform a dry-run, use
-
-```
-ansible-playbook site.yml --tags [tag] --check -v 2>&1 | tee output.log
-```
-
-**Note:** This playbook installs the **DHART** branch, and whatever latest commits were made, for instance values in `www/site_domain_prefs.json` are used _as is_. Default DB-related variables (`group_vars/all`) must match the settings in `gear.ini`, see also `create_schema.sql`.
+**Note:** This playbook installs the **DHART** branch, and whatever latest commits were made, for instance values in `www/site_domain_prefs.json` are used _as is_. 
+That may be overwritten by setting git_version via host_vars or Ansible's '-e' option.
 
 **Note:** When running CGI scripts through the web server, `PATH` does not see the virtual environment. Solutions such as [How to use Python virtual environments with mod_wsgi](https://modwsgi.readthedocs.io/en/master/user-guides/virtual-environments.html) do not seem to work for CGI scripts. So far, the solution is to specify the full path to the interpreter (`#!/usr/local/envs/dhart/bin/python`), so that the shell can find the local installation when it attempts to execute CGI programs. Hence default variables (`group_vars/all`) such as `python_venv_name` _must_ match the shebang in all CGI scripts. I think this also holds for the `gEAR/www/p` script. For practical purposes, this has also been done for the `gEAR/bin` scripts (in particular to run `db-config`). If installing the **DHART** branch, then there is nothing to do.
 
@@ -81,7 +91,7 @@ where `/etc/ansible/hosts/hosts.ini` is *e.g.*
 
 ```
 gear ansible_host=gear_IP
-dhart ansible_host=dhart_IP
+app01 ansible_host=dhart_IP
 ```
 
 and `/home/eboileau/.ansible_local_inventory.ini` is

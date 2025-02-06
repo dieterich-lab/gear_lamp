@@ -1,0 +1,6 @@
+- name: Create gear.ini
+  ansible.builtin.template:
+    src: gear.ini.j2
+    dest: "{{ app_directory }}/gEAR/gear.ini"
+    owner: "{{ app_user }}"
+  notify: Restart Apache

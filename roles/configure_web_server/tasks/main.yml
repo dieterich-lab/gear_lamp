@@ -1,0 +1,71 @@
+---
+# Configure Apache and the php modules
+# partly based on https://github.com/IGS/gEAR/blob/main/docs/setup.apache.md
+
+- name: Enable the Apache2 modules mod-rewrite, CGI and WSGI
+  apache2_module:
+    state: present
+    name: "{{ item }}"
+  notify: Restart Apache
+  with_items:
+    - rewrite
+    - cgi
+    - wsgi
+    - proxy
+    - ssl
+
+- name: Copy virtual host configuration for {{ server_name }}
+  ansible.builtin.template:
+    src: vhost.conf.j2
+    dest: "/etc/apache2/sites-available/dhart.conf"
+    
+- name: Deactivate default virtualhost
+  ansible.builtin.file:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: absent
+  notify: Restart Apache 
+
+- name: Activate virtualhost dhart vhost
+  ansible.builtin.file:
+    src: /etc/apache2/sites-available/dhart.conf
+    dest: /etc/apache2/sites-enabled/dhart.conf
+    state: link
+  notify: Restart Apache
+  
+# Disable apache's PrivateTmp
+# gEAR lets users write datafiles such as analyses in an area under /tmp until they want to save, when they 
+# are moved to a directory within the application. If Apache has PrivateTmp on this causes an error like this:
+# OSError: [Errno 18] Invalid cross-device link
+# For now, the solution is to disable this.
+# 29.04.2022 Is this still relevant?
+
+- name: Create /etc/systemd/system/apache2.service.d/
+  ansible.builtin.file:
+    path: /etc/systemd/system/apache2.service.d
+    state: directory
+
+- name: Create /etc/systemd/system/apache2.service.d/override.conf
+  ansible.builtin.copy:
+    src: apache2_service_override.conf
+    dest: /etc/systemd/system/apache2.service.d/override.conf
+  notify: Restart Apache
+    
+# On Apache, php.ini is usually located in /etc/php/PHPVersion/apache2/php.ini
+- name: Find PHP version
+  ansible.builtin.shell: php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;'
+  #shell: php -v|grep --only-matching --perl-regexp "(PHP )\d+\.\\d+\.\\d+"|cut -c 5-7
+  changed_when: false
+  register: PHPVersion
+    
+# file upload limitations
+- name: Update php.ini post
+  ansible.builtin.lineinfile:
+    path: "/etc/php/{{ PHPVersion.stdout }}/apache2/php.ini"
+    regexp: 'post_max_size ='
+    line: 'post_max_size = 3000M'
+
+- name: Update php.ini upload
+  ansible.builtin.lineinfile:
+    path: "/etc/php/{{ PHPVersion.stdout }}/apache2/php.ini"
+    regexp: 'upload_max_filesize ='
+    line: 'upload_max_filesize = 3000M'
