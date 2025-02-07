@@ -8,7 +8,7 @@
   changed_when: false
 
 - name: Link /var/www to app directory
-  when: var_www.stat.isdir
+  when: var_www.stat.isdir is not defined or var_www.stat.isdir
   block:
 
     - name: Remove /var/www
