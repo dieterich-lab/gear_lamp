@@ -34,6 +34,7 @@
       - libhdf5-dev
       - hdf5-helpers
       - git
+      - virtualenv
     state: present
 
 # Copy code from the version control system
