@@ -10,6 +10,7 @@ load_external_data: no
 
 # application user - owns the git project, app-related files, and python environment installation
 app_user: www-data
+app_group: www-data
 app_directory: /dhart
 
 # Defaults requirements gEAR v0.9.0 (master) are partly overridden
