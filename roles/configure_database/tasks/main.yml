@@ -33,6 +33,17 @@
   community.mysql.mysql_db:
     name: "{{ db_name }}"
     state: present
+    # Should we give a default encoding?
+    # Unclear! Seems that gEAR is stuck with latin1
+    # The newer versions of create_schema.sql script don't nail it down.
+    # In MariaDB the charset can only be changed afterwards if no
+    # FOREIGN KEY statements are effected. So most likey the only feasible
+    # way to do  consistent migration would be this:
+    # * Dump the database
+    # * Patch the CHARSET/COLLATE in the dump
+    # * Load the patched dump
+    # Until we know better, we force everything to latin1
+    encoding: latin1
 
 - name: Create application DB user
   community.mysql.mysql_user:
