@@ -37,7 +37,7 @@
     # Unclear! Seems that gEAR is stuck with latin1
     # The newer versions of create_schema.sql script don't nail it down.
     # In MariaDB the charset can only be changed afterwards if no
-    # FOREIGN KEY statements are effected. So most likey the only feasible
+    # FOREIGN KEY statements are effected. So most likely the only feasible
     # way to do  consistent migration would be this:
     # * Dump the database
     # * Patch the CHARSET/COLLATE in the dump
