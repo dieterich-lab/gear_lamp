@@ -11,7 +11,7 @@
     CustomLog ${APACHE_LOG_DIR}/access.log combined
     
     <Directory /var/www>
-            Options FollowSymLinks
+            Options Indexes FollowSymLinks
             AllowOverride None
             Require all granted
             # Need to do this first: sudo a2enmod rewrite
@@ -19,6 +19,12 @@
             # LogLevel alert rewrite:trace2
             RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f
             RewriteRule ^(.+)\.(\d+)\.(js|css)$ $1.$3 [L]
+    </Directory>
+
+    <Directory /var/www>
+        Options +ExecCGI +Includes
+        AddHandler cgi-script .py .cgi
+        AddOutputFilter INCLUDES .html
     </Directory>
     
     <Directory /var/www/cgi>
