@@ -3,4 +3,12 @@
     src: gear.ini.j2
     dest: "{{ app_directory }}/gEAR/gear.ini"
     owner: "{{ app_user }}"
+    group: "{{ app_group }}"
   notify: Restart Apache
+
+- name: Create logo image
+  ansible.builtin.copy:
+    src: logo-main-normal.png
+    dest: "{{ app_directory }}/gEAR/www/img/by_domain/dhart/logo-main-normal.png"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
