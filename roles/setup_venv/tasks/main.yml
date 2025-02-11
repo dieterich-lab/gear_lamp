@@ -1,5 +1,5 @@
 - name: Create virtual environment directory as {{ app_user }}
-  file:
+  ansible.builtin.file:
     state: directory
     recurse: yes
     mode: 0700
@@ -7,7 +7,7 @@
     path: "{{ python_venv_base }}"
 
 - name: Upgrade pip, setuptools, and wheels (virtual environment)
-  pip:
+  ansible.builtin.pip:
     name:
       - pip
       - setuptools
@@ -19,7 +19,7 @@
   become_user: "{{ app_user }}"
 
 - name: Install required Python packages into virtual environment
-  pip:
+  ansible.builtin.pip:
     name:
       - anndata
       - biocode
@@ -45,6 +45,10 @@
       - scanpy
       - SQLAlchemy
       - xlrd
+      # New for DHART v2
+      - shadows
+      - aiohttp
+      - rpy2
     umask: "0022"
     virtualenv: "{{ python_venv_name }}"
   become_user: "{{ app_user }}"

@@ -35,6 +35,8 @@
       - hdf5-helpers
       - git
       - virtualenv
+      - r-base
+      - r-base-dev
     state: present
 
 # Copy code from the version control system
