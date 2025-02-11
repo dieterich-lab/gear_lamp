@@ -1,7 +1,6 @@
 - name: Create virtual environment directory as {{ app_user }}
   ansible.builtin.file:
     state: directory
-    recurse: yes
     mode: 0700
     owner: "{{ app_user }}"
     path: "{{ python_venv_base }}"
