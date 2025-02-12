@@ -20,18 +20,28 @@
 - name: Install required Python packages into virtual environment
   ansible.builtin.pip:
     name:
+      - aiohttp
       - anndata
       - biocode
       - biopython
+      - cairosvg
       - dash-bio
       - dash
       - Flask
       - Flask-Compress
       - Flask-RESTful
+      - gunicorn
       - h5py
+      - jupyterlab
       - jupyter
       - kaleido
-      - louvain
+      - leidenalg
+      - matplotlib
+      - more_itertools
+      - pika
+      - rpy2
+      - sanic
+      - shadows
       # - MulticoreTSNE
       - git+https://github.com/DmitryUlyanov/Multicore-TSNE.git@master
       - diffxpy
@@ -44,10 +54,6 @@
       - scanpy
       - SQLAlchemy
       - xlrd
-      # New for DHART v2
-      - shadows
-      - aiohttp
-      - rpy2
     umask: "0022"
     virtualenv: "{{ python_venv_name }}"
   become_user: "{{ app_user }}"
