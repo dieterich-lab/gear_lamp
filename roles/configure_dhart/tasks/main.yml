@@ -6,9 +6,16 @@
     group: "{{ app_group }}"
   notify: Restart Apache
 
-- name: Create logo image
+- name: Create logo image (normal)
   ansible.builtin.copy:
     src: logo-main-normal.png
     dest: "{{ app_directory }}/gEAR/www/img/by_domain/dhart/logo-main-normal.png"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+
+- name: Create logo image (small) - try to get away with the normal logo for now
+  ansible.builtin.copy:
+    src: logo-main-normal.png
+    dest: "{{ app_directory }}/gEAR/www/img/by_domain/dhart/logo-main-small.png"
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
