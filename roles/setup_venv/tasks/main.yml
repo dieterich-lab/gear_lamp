@@ -26,9 +26,7 @@
       - biopython
       - cairosvg
       - dash-bio
-      - dash
       - Flask
-      - Flask-Compress
       - Flask-RESTful
       - gunicorn
       - h5py
@@ -36,12 +34,19 @@
       - jupyter
       - kaleido
       - leidenalg
+      - llvmlite
       - matplotlib
+      - mod-wsgi
       - more_itertools
+      - panel
       - pika
+      - python-dotenv
       - rpy2
       - sanic
       - shadows
+      - spatialdata
+      - spatialdata_io
+      - watchfiles
       # - MulticoreTSNE
       - git+https://github.com/DmitryUlyanov/Multicore-TSNE.git@master
       - diffxpy
