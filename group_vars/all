@@ -6,7 +6,11 @@
 repository: https://github.com/dieterich-lab/gEAR.git
 # Branch or tag to deploy
 git_version: DHART
+
+# On initial install execute with "load_external_data": "yes"
+# This implies "load_orthology_data": "yes"
 load_external_data: no
+load_orthology_data: no
 
 # application user - owns the git project, app-related files, and python environment installation
 app_user: www-data
@@ -38,11 +42,16 @@ go_db: http://purl.obolibrary.org/obo/go.obo
 organisms:
   - key: homo_sapiens
     value: 1
+    taxa_id: 9606
   - key: mus_musculus
     value: 2
+    taxa_id: 10090
   - key: rattus_norvegicus
     value: 3
+    taxa_id: 10116
   - key: sus_scrofa
     value: 4
+    taxa_id: 9823
   - key: danio_rerio
     value: 5
+    taxa_id: 7955

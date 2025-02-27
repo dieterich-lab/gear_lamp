@@ -49,8 +49,10 @@ Each role can be deployed in turn with the `--tags` option, *e.g.*
 * install: Installs all the required software
 * configure_database: Sets up the database
 * configure_dhart: Configured DHART
-* load_external_data: Loads data from external sources (skipped unless run with
-  "load_external_data": "yes")
+* load_external_data: Loads data from external sources. This skipped unless run with
+  "load_external_data": "yes". As a whole should only be executed once to avoid duplicated
+  data in the database. Also updated www/freature_mapping, which is less problematic.
+  To execute only that part run with "load_orthology_data": "yes".
 * configure:web_server: Sets up Apache and PHP
 
 To perform a dry-run, just add the --check option.
