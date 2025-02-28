@@ -6,6 +6,11 @@
     group: "{{ app_group }}"
   notify: Restart Apache
 
+- name: Install cron job
+  ansible.builtin.template:
+    src: cron.j2
+    dest: /etc/cron.d/dhart
+
 - name: Create logo image (normal)
   ansible.builtin.copy:
     src: logo-main-normal.png
