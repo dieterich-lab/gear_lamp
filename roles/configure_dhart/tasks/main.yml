@@ -1,0 +1,26 @@
+- name: Create gear.ini
+  ansible.builtin.template:
+    src: gear.ini.j2
+    dest: "{{ app_directory }}/gEAR/gear.ini"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+  notify: Restart Apache
+
+- name: Install cron job
+  ansible.builtin.template:
+    src: cron.j2
+    dest: /etc/cron.d/dhart
+
+- name: Create logo image (normal)
+  ansible.builtin.copy:
+    src: logo-main-normal_framed.png
+    dest: "{{ app_directory }}/gEAR/www/img/by_domain/dhart/logo-main-normal.png"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+
+- name: Create logo image (small) - try to get away with the normal logo for now
+  ansible.builtin.copy:
+    src: logo-main-normal_framed.png
+    dest: "{{ app_directory }}/gEAR/www/img/by_domain/dhart/logo-main-small.png"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"

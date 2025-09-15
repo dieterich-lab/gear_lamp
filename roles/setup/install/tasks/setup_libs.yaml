@@ -1,6 +1,0 @@
----
-- name: Install libraries
-  apt:
-    name: "{{ required_libs }}"
-    state: present
-    update_cache: true

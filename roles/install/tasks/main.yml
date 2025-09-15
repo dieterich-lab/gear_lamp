@@ -1,0 +1,66 @@
+---
+- name: Install requires software
+  apt:
+    name:
+      # Database
+      - mariadb-server
+      - python3-mysqldb
+      # Web Server
+      - apache2
+      - apache2-dev
+      - libapache2-mod-wsgi-py3
+      - php
+      - php-mysql
+      # Build Environment
+      - build-essential
+      - libssl-dev
+      - zlib1g-dev
+      - libncursesw5-dev
+      - libreadline-dev
+      - libapache2-mod-wsgi-py3
+      - libsqlite3-dev
+      - libgdbm-dev
+      - libbz2-dev
+      - lzma
+      - liblzma-dev
+      - libxml2-dev
+      - tk-dev
+      - libc6-dev
+      - libffi-dev
+      - libblas-dev
+      - liblapack-dev
+      - cmake
+      - hdf5-tools
+      - libhdf5-dev
+      - hdf5-helpers
+      - git
+      - virtualenv
+      - r-base
+      - r-base-dev
+    state: present
+
+# Copy code from the version control system
+
+- name: Create local repo directory
+  ansible.builtin.file:
+    state: directory
+    mode: 0700
+    owner: "{{ app_user }}"
+    path: "{{ app_directory }}/gEAR"
+
+- name: Clone source code
+  ansible.builtin.git:
+    repo: "{{ repository }}"
+    dest: "{{ app_directory }}/gEAR/"
+    force: yes
+    clone: yes
+  become_user: "{{ app_user }}"
+
+- name: "Checkout {{ git_version }}"
+  ansible.builtin.git:
+    repo: "{{ repository }}"
+    dest: "{{ app_directory }}/gEAR/"
+    force: yes
+    clone: no
+    version: "{{ git_version }}"
+  become_user: "{{ app_user }}"

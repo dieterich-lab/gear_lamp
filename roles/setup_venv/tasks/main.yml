@@ -1,0 +1,66 @@
+- name: Create virtual environment directory as {{ app_user }}
+  ansible.builtin.file:
+    state: directory
+    mode: 0700
+    owner: "{{ app_user }}"
+    path: "{{ python_venv_base }}"
+
+- name: Upgrade pip, setuptools, and wheels (virtual environment)
+  ansible.builtin.pip:
+    name:
+      - pip
+      - setuptools
+      - wheel
+    umask: "0022"
+    virtualenv: "{{ python_venv_name }}"
+    virtualenv_site_packages: yes
+    state: latest
+  become_user: "{{ app_user }}"
+
+- name: Install required Python packages into virtual environment
+  ansible.builtin.pip:
+    name:
+      - aiohttp
+      - anndata
+      - biocode
+      - biopython
+      - cairosvg
+      - dash-bio
+      - dask[dataframe]
+      - Flask
+      - Flask-RESTful
+      - gunicorn
+      - h5py
+      - jupyterlab
+      - jupyter
+      - kaleido
+      - leidenalg
+      - llvmlite
+      - matplotlib
+      - mod-wsgi
+      - more_itertools
+      - panel
+      - pika
+      - python-dotenv
+      - tables
+      - rpy2
+      - sanic
+      - shadows
+      - spatialdata
+      - spatialdata_io
+      - watchfiles
+      # - MulticoreTSNE
+      - git+https://github.com/DmitryUlyanov/Multicore-TSNE.git@master
+      - diffxpy
+      - mysql-connector-python
+      - numba
+      - Pillow
+      - plotly
+      - python-dotenv
+      - requests
+      - scanpy
+      - SQLAlchemy
+      - xlrd
+    umask: "0022"
+    virtualenv: "{{ python_venv_name }}"
+  become_user: "{{ app_user }}"

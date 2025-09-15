@@ -1,0 +1,66 @@
+---
+
+- name: Start MariaDB service
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Create database password
+  ansible.builtin.shell:
+    cmd: "umask 077 && tr -dc A-Za-z0-9 </dev/urandom | head -c 32 > {{ app_directory }}/.db_password"
+    creates: "{{ app_directory }}/.db_password"
+  become_user: "{{ app_user }}"
+
+- name: Get database password
+  ansible.builtin.shell:
+    cmd: "cat {{ app_directory }}/.db_password"
+  changed_when: false
+  register: get_db_password
+
+- name: Set db_password fact
+  set_fact:
+    db_password: "{{ get_db_password.stdout }}"
+
+- name: Create .mariadb_password file
+  ansible.builtin.template:
+    src: mariadb_password.j2
+    dest: "{{ app_directory }}/.mariadb_password"
+    owner: "{{ app_user }}"
+    mode: 0700
+
+- name: Create application DB
+  community.mysql.mysql_db:
+    name: "{{ db_name }}"
+    state: present
+    # Should we give a default encoding?
+    # Unclear! Seems that gEAR is stuck with latin1
+    # The newer versions of create_schema.sql script don't nail it down.
+    # In MariaDB the charset can only be changed afterwards if no
+    # FOREIGN KEY statements are effected. So most likely the only feasible
+    # way to do  consistent migration would be this:
+    # * Dump the database
+    # * Patch the CHARSET/COLLATE in the dump
+    # * Load the patched dump
+    # Until we know better, we force everything to latin1
+    encoding: latin1
+
+- name: Create application DB user
+  community.mysql.mysql_user:
+    name: "{{ db_user }}"
+    priv: "{{ db_name }}.*:ALL"
+    password: "{{ db_password }}"
+    
+- name: Create DB schema
+  ansible.builtin.shell:
+    cmd: |
+      /usr/bin/mysql \
+      --defaults-extra-file='{{ app_directory }}/.mariadb_password' \
+      -u {{ db_user }} \
+      {{ db_name }} \
+      < '{{ app_directory }}/gEAR/create_schema.sql' \
+      && touch '{{ app_directory }}/.db_setup_done'
+    creates: "{{ app_directory }}/.db_setup_done"
+  become_user: "{{ app_user }}"
+
+       

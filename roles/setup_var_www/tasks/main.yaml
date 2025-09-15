@@ -1,0 +1,35 @@
+
+
+- name: Fix permissions on app directory
+  ansible.builtin.file:
+    path: "{{ app_directory }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: 0700
+
+
+# ideally, we want to use gEAR/www directly (i.e. avoid symlink), but /var/www is hard coded at various places in the code base...
+# so we stick to the current solution...
+
+- name: Check /var/www
+  ansible.builtin.stat:
+    path: /var/www
+  register: var_www
+  changed_when: false
+
+- name: Link /var/www to app directory
+  when: var_www.stat.isdir is not defined or var_www.stat.isdir
+  block:
+
+    - name: Remove /var/www
+      ansible.builtin.file:
+        path: /var/www
+        state: absent
+
+    - name: Link /var/www
+      ansible.builtin.file:
+        path: /var/www
+        src: "{{ app_directory }}/gEAR/www"
+        owner: "{{ app_user }}"
+        state: link
+        force: yes

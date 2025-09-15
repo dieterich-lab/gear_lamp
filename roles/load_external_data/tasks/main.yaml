@@ -1,0 +1,99 @@
+---
+# This playbook downloads gene tables, process and load them to the DB
+
+- name: Load external data
+  when: load_external_data
+  block:
+
+    - name: Download dumps (actually data files) for selected organisms
+      shell:
+        cmd: |
+          rsync -a --delete \
+              rsync://ftp.ensembl.org/ensembl/pub/release-{{ annotation_release }}/genbank/{{ item.key }} \
+              {{ app_directory }}/gEAR/annotations
+      with_items: "{{ organisms }}"
+      become_user: "{{ app_user }}"
+
+    - name: Load annotations to DB gene tables
+      command:
+        cmd: "{{ app_directory }}/gEAR/bin/load_ensembl_gbk_annotations.py -i {{ app_directory }}/gEAR/annotations/{{ item.key }} -id {{ item.value }} -r {{ annotation_release }}"
+      with_items: "{{ organisms }}"
+      become_user: "{{ app_user }}"
+
+    - name: Download functional annotations
+      shell:
+        cmd: "wget {{ go_db }} -P {{ app_directory }}/gEAR/annotations"
+      become_user: "{{ app_user }}"
+
+    - name: Load functional annotations to DB go table
+      command:
+        cmd: "{{ app_directory }}/gEAR/bin/load_gene_ontology.py -i {{ app_directory }}/gEAR/annotations/go.obo"
+      become_user: "{{ app_user }}"
+
+    - name: Download aliases for selected organisms
+      shell:
+        cmd: |
+          rsync -a --delete \
+              rsync://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Mammalia/{{ item.key|capitalize }}.gene_info.gz \
+              {{ app_directory }}/gEAR/annotations
+      with_items: "{{ organisms }}"
+      when: "item.value != 5"
+      become_user: "{{ app_user }}"
+
+    - name: Download aliases for Danio rerio
+      shell:
+        cmd: |
+          rsync -a --delete \
+              rsync://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Non-mammalian_vertebrates/Danio_rerio.gene_info.gz \
+              {{ app_directory }}/gEAR/annotations
+      become_user: "{{ app_user }}"
+
+    - name: Load aliases to DB symbol table, restart MySQL/Apache
+      command:
+        cmd: "{{ app_directory }}/gEAR/bin/load_gene_synonyms.py -i {{ app_directory }}/gEAR/annotations/{{ item.key|capitalize }}.gene_info.gz -id {{ item.value }}"
+      with_items: "{{ organisms }}"
+      become_user: "{{ app_user }}"
+
+- name: Load Orthology Data
+  when: load_external_data or load_orthology_data
+  block:
+
+    - name: Create stage folder
+      ansible.builtin.file:
+        path: "{{ app_directory }}/gEAR/stage"
+        state: directory
+      become_user: "{{ app_user }}"
+
+    - name: Get ORTHOLOGY-ALLIANCE_COMBINED.tsv.gz
+      ansible.builtin.get_url:
+        url: https://fms.alliancegenome.org/download/ORTHOLOGY-ALLIANCE_COMBINED.tsv.gz
+        dest: "{{ app_directory }}/gEAR/stage/ORTHOLOGY-ALLIANCE_COMBINED.tsv.gz"
+      become_user: "{{ app_user }}"
+
+    - name: Unpack ORTHOLOGY-ALLIANCE_COMBINED.tsv.gz
+      ansible.builtin.command:
+        cmd: "/usr/bin/gunzip {{ app_directory }}/gEAR/stage/ORTHOLOGY-ALLIANCE_COMBINED.tsv.gz"
+        creates: "{{ app_directory }}/gEAR/stage/ORTHOLOGY-ALLIANCE_COMBINED.tsv"
+
+    - name: Get raw mappings
+      ansible.builtin.get_url:
+        url: "https://www.alliancegenome.org/api/geneMap/ensembl?species={{ item.taxa_id }}"
+        dest: "{{ app_directory }}/gEAR/stage/id.map.{{ item.taxa_id }}.tab"
+        timeout: 600
+      become_user: "{{ app_user }}"
+      loop: "{{ organisms }}"
+
+    - name: Convert Orthology
+      ansible.builtin.shell:
+        cmd: |
+          . {{ python_venv_name }}/bin/activate
+          {{ app_directory }}/gEAR/bin/create_annotation_orthology_maps.py \
+            -i {{ app_directory }}/gEAR/stage \
+            -o {{ app_directory }}/gEAR/www/feature_mapping
+      become_user: "{{ app_user }}"
+
+#    - name: Delete stage folder
+#      ansible.builtin.file:
+#        path: "{{ app_directory }}/gEAR/stage"
+#        state: absent
+#        become_user: "{{ app_user }}"

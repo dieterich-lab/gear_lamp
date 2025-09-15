@@ -1,7 +1,0 @@
----
-
-server_name: dhart
-server: 10.250.140.151
-
-# Location where to clone the source code and "install" the app
-app_directory: /dhart
