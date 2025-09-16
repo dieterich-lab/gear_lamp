@@ -18,10 +18,10 @@ app_group: www-data
 app_directory: /dhart
 
 # Defaults requirements gEAR v0.9.0 (master) are partly overridden
-# Use system Python 3.11.2 to install virtual environment
-# Debian GNU/Linux 12 (bookworm) - 6.1.0-17-amd64
+# Use system Python 3.13.5 to install virtual environment
+# Debian GNU/Linux 13 (trixie) - 6.12.41+deb13-amd64
 
-python_version: 3.11.2
+python_version: 3.13.5
 python_dist_name:  "Python-{{ python_version }}"
 python_venv_base: "/usr/local/envs"
 python_venv_name: "{{ python_venv_base }}/dhart"

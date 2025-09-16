@@ -61,6 +61,7 @@
       - scanpy
       - SQLAlchemy
       - xlrd
+      - legacy-cgi
     umask: "0022"
     virtualenv: "{{ python_venv_name }}"
   become_user: "{{ app_user }}"

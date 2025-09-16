@@ -34,6 +34,8 @@
       - libhdf5-dev
       - hdf5-helpers
       - git
+      - python3-venv
+      - python3-packaging
       - virtualenv
       - r-base
       - r-base-dev
