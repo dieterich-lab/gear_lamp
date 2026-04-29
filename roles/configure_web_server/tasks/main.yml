@@ -19,6 +19,7 @@
   ansible.builtin.template:
     src: vhost.conf.j2
     dest: "/etc/apache2/sites-available/dhart.conf"
+  notify: Restart Apache
     
 - name: Deactivate default virtualhost
   ansible.builtin.file:
@@ -56,6 +57,7 @@
   ansible.builtin.shell: php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;'
   #shell: php -v|grep --only-matching --perl-regexp "(PHP )\d+\.\\d+\.\\d+"|cut -c 5-7
   changed_when: false
+  check_mode: no
   register: PHPVersion
     
 # file upload limitations
