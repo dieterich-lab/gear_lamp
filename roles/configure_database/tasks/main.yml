@@ -16,6 +16,7 @@
   ansible.builtin.shell:
     cmd: "cat {{ app_directory }}/.db_password"
   changed_when: false
+  check_mode: no
   register: get_db_password
 
 - name: Set db_password fact
