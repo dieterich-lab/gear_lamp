@@ -10,6 +10,7 @@
     - {role: "setup_var_www", tags: "setup_var_www"}
     - {role: "install", tags: "install"}
     - {role: "setup_venv", tags: "setup_venv"}
+    - {role: "setup_r", tags: "setup_r"}
     - {role: "configure_database", tags: "configure_database"}
     - {role: "configure_dhart", tags: "configure_dhart"}
     - {role: "load_external_data", tags: "load_external_data"}

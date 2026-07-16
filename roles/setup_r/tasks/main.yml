@@ -1,0 +1,63 @@
+---
+- name: Check if R setup is already done
+  ansible.builtin.stat:
+    path: "{{ r_setup_marker }}"
+  register: r_setup_done
+  check_mode: no
+  changed_when: false
+
+- name: Setup R and packages
+  when: not r_setup_done.stat.exists
+  block:
+    # APT package list from /home/wilhelmh/gEAR/docker/Dockerfile.r
+    - name: Install system dependencies for R
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - curl
+          - wget
+          - build-essential
+          - gfortran
+          - libreadline-dev
+          - xorg-dev
+          - libbz2-dev
+          - libcurl4-openssl-dev
+          - libssl-dev
+          - libxml2-dev
+          - libfontconfig1-dev
+          - libharfbuzz-dev
+          - libfribidi-dev
+          - libfreetype6-dev
+          - libpng-dev
+          - libtiff5-dev
+          - libjpeg-dev
+          - libwebp-dev
+          - libgit2-dev
+          - libuv1-dev
+          - ca-certificates
+          - tzdata
+          - git
+          - unzip
+          - libgfortran5
+          - libhdf5-dev
+        state: present
+        update_cache: yes
+
+    - name: Run install_bioc.sh to install R
+      ansible.builtin.command:
+        cmd: ./install_bioc.sh
+        chdir: "{{ gear_repo_dir }}/services/projectr"
+
+    - name: Remove build directory
+      ansible.builtin.shell:
+        cmd: rm -rf "/opt/R-*.*.*"
+
+    - name: Install R packages using Rscript
+      command:
+        cmd: "{{ r_home }}/bin/Rscript --vanilla install_packages.R"
+        chdir: "{{ gear_repo_dir }}/services/projectr"
+
+    - name: Create R setup marker file
+      file:
+        path: "{{ r_setup_marker }}"
+        state: touch

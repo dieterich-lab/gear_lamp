@@ -57,3 +57,6 @@ organisms:
   - key: danio_rerio
     value: 5
     taxa_id: 7955
+
+r_setup_marker: "{{ app_directory }}/.r_setup_done"
+r_home: /usr/local
