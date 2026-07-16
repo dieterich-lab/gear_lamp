@@ -48,12 +48,12 @@
     state: directory
     mode: 0700
     owner: "{{ app_user }}"
-    path: "{{ app_directory }}/gEAR"
+    path: "{{ gear_repo_dir }}"
 
 - name: Clone source code
   ansible.builtin.git:
     repo: "{{ repository }}"
-    dest: "{{ app_directory }}/gEAR/"
+    dest: "{{ gear_repo_dir }}"
     force: yes
     clone: yes
   become_user: "{{ app_user }}"
@@ -61,7 +61,7 @@
 - name: "Checkout {{ git_version }}"
   ansible.builtin.git:
     repo: "{{ repository }}"
-    dest: "{{ app_directory }}/gEAR/"
+    dest: "{{ gear_repo_dir }}"
     force: yes
     clone: no
     version: "{{ git_version }}"

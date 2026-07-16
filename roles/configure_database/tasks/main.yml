@@ -58,7 +58,7 @@
       --defaults-extra-file='{{ app_directory }}/.mariadb_password' \
       -u {{ db_user }} \
       {{ db_name }} \
-      < '{{ app_directory }}/gEAR/create_schema.sql' \
+      < '{{ gear_repo_dir }}/create_schema.sql' \
       && touch '{{ app_directory }}/.db_setup_done'
     creates: "{{ app_directory }}/.db_setup_done"
   become_user: "{{ app_user }}"

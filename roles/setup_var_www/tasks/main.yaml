@@ -29,7 +29,7 @@
     - name: Link /var/www
       ansible.builtin.file:
         path: /var/www
-        src: "{{ app_directory }}/gEAR/www"
+        src: "{{ gear_repo_dir }}/www"
         owner: "{{ app_user }}"
         state: link
         force: yes

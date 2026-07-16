@@ -1,5 +1,5 @@
 # Ansible: roles/configure_dhart/templates/cron.j2
 
-0,30 * * * * {{ app_user }} cd {{ app_directory }}/gEAR/bin && . {{ python_venv_name }}/bin/activate && ./generate_initial_composition_plots.py
-15,45 * * * * {{ app_user }} cd {{ app_directory }}/gEAR/bin && . {{ python_venv_name }}/bin/activate && ./generate_static_display_images.py localhost
+0,30 * * * * {{ app_user }} cd {{ gear_repo_dir }}/bin && . {{ python_venv_name }}/bin/activate && ./generate_initial_composition_plots.py
+15,45 * * * * {{ app_user }} cd {{ gear_repo_dir }}/bin && . {{ python_venv_name }}/bin/activate && ./generate_static_display_images.py localhost
 

@@ -17,6 +17,8 @@ app_user: www-data
 app_group: www-data
 app_directory: /dhart
 
+gear_repo_dir: "{{ app_directory }}/gEAR"
+
 # Defaults requirements gEAR v0.9.0 (master) are partly overridden
 # Use system Python 3.13.5 to install virtual environment
 # Debian GNU/Linux 13 (trixie) - 6.12.41+deb13-amd64

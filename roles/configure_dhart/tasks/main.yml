@@ -1,7 +1,7 @@
 - name: Create gear.ini
   ansible.builtin.template:
     src: gear.ini.j2
-    dest: "{{ app_directory }}/gEAR/gear.ini"
+    dest: "{{ gear_repo_dir }}/gear.ini"
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
   notify: Restart Apache
@@ -14,13 +14,13 @@
 - name: Create logo image (normal)
   ansible.builtin.copy:
     src: logo-main-normal_framed.png
-    dest: "{{ app_directory }}/gEAR/www/img/by_domain/dhart/logo-main-normal.png"
+    dest: "{{ gear_repo_dir }}/www/img/by_domain/dhart/logo-main-normal.png"
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
 
 - name: Create logo image (small) - try to get away with the normal logo for now
   ansible.builtin.copy:
     src: logo-main-normal_framed.png
-    dest: "{{ app_directory }}/gEAR/www/img/by_domain/dhart/logo-main-small.png"
+    dest: "{{ gear_repo_dir }}/www/img/by_domain/dhart/logo-main-small.png"
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
