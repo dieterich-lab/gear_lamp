@@ -52,10 +52,11 @@
       ansible.builtin.shell:
         cmd: rm -rf "/opt/R-*.*.*"
 
+    # Only the Docker one seems to be up-to-date
     - name: Install R packages using Rscript
       command:
         cmd: "{{ r_home }}/bin/Rscript --vanilla install_packages.R"
-        chdir: "{{ gear_repo_dir }}/services/projectr"
+        chdir: "{{ gear_repo_dir }}/docker"
 
     - name: Create R setup marker file
       file:
