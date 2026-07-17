@@ -9,6 +9,7 @@
     LogLevel info
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
+    SetEnv LD_LIBRARY_PATH /usr/local/lib/R/lib
     
     <Directory /var/www>
             Options Indexes FollowSymLinks
