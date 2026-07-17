@@ -5,4 +5,4 @@ server: 10.250.135.22
 
 git_version: DHART-v3
 
-domain_url: http://gear2.internal
+domain_url: https://gear2.internal

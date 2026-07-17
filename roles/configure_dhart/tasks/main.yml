@@ -24,3 +24,9 @@
     dest: "{{ gear_repo_dir }}/www/img/by_domain/dhart/logo-main-small.png"
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
+
+- name: Fix www/site_domain_prefs.json
+  ansible.builtin.lineinfile:
+    path: "{{ gear_repo_dir }}/www/site_domain_prefs.json"
+    regexp: '"domain_url":'
+    line: "    \"domain_url\": \"{{ domain_url }}\","
